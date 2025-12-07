@@ -18,7 +18,7 @@ sys.path.insert(1, '/opt/victronenergy/dbus-systemcalc-py/ext/velib_python')
 from vedbus import VeDbusService
 from settingsdevice import SettingsDevice
 
-# useful docs: https://github.com/victronenergy/venus/wiki/dbus#switch
+VERSION = open("/data/dbus-starlink/version", "r").read().strip()
 
 class Dishy:
     def __init__(self, target="192.168.100.1:9200"):
@@ -74,7 +74,7 @@ class DbusService:
 
         # Create the management D-Bus entries
         self._dbusservice.add_path('/Management/ProcessName', 'dbus-starlink')
-        self._dbusservice.add_path('/Management/ProcessVersion', '0.1.0')
+        self._dbusservice.add_path('/Management/ProcessVersion', VERSION)
         self._dbusservice.add_path('/Management/Connection', 'gRPC')
 
         # Create device-level D-Bus entries
