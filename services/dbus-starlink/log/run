@@ -1,2 +1,2 @@
 #!/bin/sh
-exec multilog t s25000 n4 /var/log/dbus-i2c-relays
+exec multilog t s25000 n4 /var/log/dbus-starlink
