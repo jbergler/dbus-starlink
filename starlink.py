@@ -78,7 +78,7 @@ class DbusService:
         self._dbusservice.add_path('/Management/Connection', 'gRPC')
 
         # Create device-level D-Bus entries
-        self._dbusservice.add_path('/DeviceInstance', self.id)
+        self._dbusservice.add_path('/DeviceInstance', 1)
         self._dbusservice.add_path('/ProductId', 45108)
         self._dbusservice.add_path('/ProductName', 'Starlink')
         self._dbusservice.add_path('/FirmwareVersion', info.software_version if info.HasField('software_version') else 'N/A')
