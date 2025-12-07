@@ -4,9 +4,11 @@ packageName="dbus-starlink"
 source "/data/SetupHelper/HelperResources/IncludeHelpers"
 
 if [ "$scriptAction" == 'INSTALL' ]; then
-    logMessage "Making sure pip is available"
-    opkg update
-    opkg install python3-pip
+    if [[ ! $(command -v pip3) ]]; then
+        logMessage "pip3 not found, installing python3-pip"
+        opkg update
+        opkg install python3-pip
+    fi
 
     logMessage "Installing required python packages"
     pip3 install grpcio protobuf
