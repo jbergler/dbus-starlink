@@ -1,17 +1,19 @@
 #!/bin/bash
 
 packageName="dbus-starlink"
-standardPromptAndActions='yes'
 source "/data/SetupHelper/HelperResources/IncludeHelpers"
 
-# Custom install actions
 if [ "$scriptAction" == 'INSTALL' ]; then
+    logMessage "Making sure pip is available"
+    opkg update
+    opkg install python3-pip
+
+    logMessage "Installing required python packages"
     pip3 install grpcio protobuf
-    installService $packageName
 fi
 
 if [ "$scriptAction" == 'UNINSTALL' ]; then
-    removeService $packageName
+    logMessage "Not removing python packages, as they may be used by other packages"
 fi
 
-endScript
+endScript 'INSTALL_FILES' 'INSTALL_SERVICES' 'ADD_DBUS_SETTINGS'
