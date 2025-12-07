@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "*** starting dbus-starlink ***"
+exec 2>&1
+exec nice -n 15 python3 /data/dbus-starlink/starlink.py

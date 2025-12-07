@@ -1,0 +1,17 @@
+#!/bin/bash
+
+packageName="dbus-starlink"
+standardPromptAndActions='yes'
+source "/data/SetupHelper/HelperResources/IncludeHelpers"
+
+# Custom install actions
+if [ "$scriptAction" == 'INSTALL' ]; then
+    pip3 install grpcio protobuf
+    installService $packageName
+fi
+
+if [ "$scriptAction" == 'UNINSTALL' ]; then
+    removeService $packageName
+fi
+
+endScript

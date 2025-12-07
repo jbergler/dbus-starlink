@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package SpaceX.API.Device;
+
+enum PositionSource {
+  AUTO = 0;
+  NONE = 1;
+  UT_INFO = 2;
+  EXTERNAL = 3;
+  GPS = 4;
+  STARLINK = 5;
+  GNC_GPS = 6;
+  GNC_PNT = 7;
+  GNC_FUSED = 8;
+  GNC_RAW = 9;
+}
+
+message DeviceInfo {
+	optional string id = 1;
+	optional string hardware_version = 2;
+	optional string software_version = 3;
+	optional string country_code = 4;
+	optional int32 utc_offset_s = 5;
+}
+
+message GetDeviceInfoRequest {
+}
+
+message GetDeviceInfoResponse {
+	optional DeviceInfo device_info = 1;
+}
+
+message LLAPosition {
+  double lat = 1;
+  double lon = 2;
+  double alt = 3;
+}
+
+message GetLocationRequest {
+  PositionSource source = 1;
+}
+
+message GetLocationResponse {
+  LLAPosition lla = 1;
+  PositionSource source = 3;
+  double sigma_m = 4;
+  reserved 2;
+  reserved "ecef";
+}
+
+message Status {
+  int32 code = 1;
+  string message = 2;
+}
+
+service Device {
+  rpc Handle ( Request ) returns ( Response );
+}
+
+message Request {
+  uint64 id = 1;
+  string target_id = 13;
+  uint64 epoch_id = 14;
+  oneof request {
+    GetDeviceInfoRequest get_device_info = 1008;
+    GetLocationRequest get_location = 1017;
+  }
+}
+
+message Response {
+  uint64 id = 1;
+  Status status = 2;
+  uint64 api_version = 3;
+  oneof response {
+    GetDeviceInfoResponse get_device_info = 1004;
+    GetLocationResponse location = 1017;
+  }
+}
