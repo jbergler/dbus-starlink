@@ -119,7 +119,7 @@ class DbusService:
             self._dbusservice['/Fix'] = 1  # Fix acquired
             self._dbusservice['/Position/Latitude'] = location["latitude"]
             self._dbusservice['/Position/Longitude'] = location["longitude"]
-            self._dbusservice['/Position/Altitude'] = location["altitude"]
+            self._dbusservice['/Position/Altitude'] = int(location["altitude"])
             logging.info(f"Updated position: Lat {location['latitude']}, Lon {location['longitude']}, Alt {location['altitude']}")
         else:
             self._dbusservice['/Fix'] = 0  # No fix
