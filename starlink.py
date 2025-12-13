@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
-from gi.repository import GLib
 import logging
 import sys
-import os
-import platform
+from hashlib import sha256
+
 import dbus
 import grpc
-from hashlib import sha256
+from gi.repository import GLib
 
 # Import generated gRPC stubs
 import dishy_pb2
@@ -15,10 +14,10 @@ import dishy_pb2_grpc
 
 # Make sure the path includes Victron libraries
 sys.path.insert(1, "/opt/victronenergy/dbus-systemcalc-py/ext/velib_python")
-from vedbus import VeDbusService
 from settingsdevice import SettingsDevice
+from vedbus import VeDbusService
 
-VERSION = open("/data/dbus-starlink/version", "r").read().strip()
+VERSION = open("/data/dbus-starlink/version").read().strip()
 
 
 class Dishy:
@@ -37,14 +36,13 @@ class Dishy:
             response = self.stub.Handle(request, timeout=self.timeout)
             if response.status.code != 0:
                 logging.warning(
-                    f"Starlink request failed: {response.status.message} (code: {response.status.code})"
+                    f"Starlink request failed: {response.status.message} "
+                    f"(code: {response.status.code})"
                 )
                 return None
             return response
         except grpc.RpcError as e:
-            logging.error(
-                f"gRPC error during Starlink request: {e.code()}: {e.details()}"
-            )
+            logging.error(f"gRPC error during Starlink request: {e.code()}: {e.details()}")
             raise
 
     def get_device_info(self):
@@ -113,9 +111,9 @@ class DbusService:
             path="/CustomName",
             value=self._settings[custom_name_key],
             writeable=True,
-            onchangecallback=lambda p,
-            v,
-            key=custom_name_key: self._handle_writable_setting_change(key, p, v),
+            onchangecallback=lambda p, v, key=custom_name_key: self._handle_writable_setting_change(
+                key, p, v
+            ),
         )
 
         self._dbusservice.register()
@@ -124,7 +122,7 @@ class DbusService:
     def _setup_settings(self):
         settings_path_prefix = f"/Settings/Devices/starlink_{self.id}"
         supported_settings = {
-            "CustomName": [f"{settings_path_prefix}/CustomName", f"Starlink", 0, 0]
+            "CustomName": [f"{settings_path_prefix}/CustomName", "Starlink", 0, 0]
         }
         return SettingsDevice(dbus.SystemBus(), supported_settings, None)
 
@@ -136,7 +134,8 @@ class DbusService:
             self._dbusservice["/Position/Longitude"] = location["longitude"]
             self._dbusservice["/Position/Altitude"] = int(location["altitude"])
             logging.info(
-                f"Updated position: Lat {location['latitude']}, Lon {location['longitude']}, Alt {location['altitude']}"
+                f"Updated position: Lat {location['latitude']}, "
+                f"Lon {location['longitude']}, Alt {location['altitude']}"
             )
         else:
             self._dbusservice["/Fix"] = 0  # No fix
@@ -146,9 +145,7 @@ class DbusService:
 
 
 def main():
-    logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-    )
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
     from dbus.mainloop.glib import DBusGMainLoop
 
@@ -159,7 +156,7 @@ def main():
     service = DbusService()
     GLib.timeout_add(60000, service.refresh)
 
-    logging.info(f"D-Bus service started. Entering main loop.")
+    logging.info("D-Bus service started. Entering main loop.")
     mainloop.run()
 
 

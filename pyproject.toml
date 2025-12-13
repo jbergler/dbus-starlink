@@ -8,3 +8,23 @@ dependencies = [
     "grpcio>=1.76.0",
     "grpcio-tools>=1.76.0",
 ]
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+exclude = ["*_pb2.py", "*_pb2_grpc.py"]
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "UP", # pyupgrade
+]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
